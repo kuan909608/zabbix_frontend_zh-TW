@@ -12,8 +12,11 @@
 
 6.4 的原專案檔案與固定官方模板比較後，補上原先缺少的 50 筆，並保留 104 筆未見於該模板的舊版字串，因此共 4,721 筆，涵蓋固定官方模板的全部 4,617 筆。原有訊息鍵與來源註記均保留。7.0／7.2／7.4 的訊息鍵集合各與固定官方英文模板相符。四版均重新執行 238 項核心用語規則、全檔參數／巨集／換行與 MO 編譯回讀檢查；6.4 舊格式的 VMware 角括號參數也另行核對。中文採單一複數形式，6.4 兩筆「每隔幾天／幾週」訊息保留複數原文的完整間隔參數。本機未執行 GNU msgfmt，仍由推送後的 GitHub Actions 檢查。已確認的 8.0 成果與 `src/` 原檔均未變更，工具、用語表、逐筆進度及修改明細仍只存於本機。
 
+6.0 於 2026-11-18 另加入支援，英文、簡中、繁中與 COPYING 均直接取自 Zabbix Git `release/6.0` 的固定 commit `fb00b18353a1211dac3b47d4644d21e962a17e67`。成果檔以官方英文模板的 4,092 筆字串為完整集合，依語境、英文及複數原文完全相符的鍵沿用 6.4 已校對譯文 4,063 筆、8.0 已校對譯文 1 筆；另有 28 筆專用字串依英文及可取得的簡中逐筆翻譯。官方繁中基線與簡中對照各為 3,981 筆；不以行號或模糊比對直接套用譯文。全部訊息已補齊，無 fuzzy，翻譯人為 `kuan909608`；已通過本機核心用語、參數／巨集／換行與 MO 編譯回讀檢查，仍待實機驗證。原文、來源雜湊、工具及逐筆校對明細只存於本機，既有五版翻譯未變動。
+
 | 版本 | 來源 | 固定 commit |
 | --- | --- | --- |
+| 6.0 | [官方 release/6.0](https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/ui/locale/zh_TW/LC_MESSAGES/frontend.po?at=fb00b18353a1211dac3b47d4644d21e962a17e67) | `fb00b18353a1211dac3b47d4644d21e962a17e67` |
 | 6.4 | [原始 Repo 的 frontend.po](https://github.com/kuan909608/zabbix_frontend_zh-TW/blob/620269d/frontend.po)；缺漏字串依下述固定官方英文模板補齊 | clone 時的 `main`：`620269d`；保留自訂來源，修正四行註解格式後進行校對 |
 | 7.0 | [官方 release/7.0](https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/ui/locale/zh_TW/LC_MESSAGES/frontend.po?at=e556a0076ff42fa566eb5acf4882cfbadd8b46cd) | `e556a0076ff42fa566eb5acf4882cfbadd8b46cd` |
 | 7.2 | [官方 release/7.2](https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/ui/locale/zh_TW/LC_MESSAGES/frontend.po?at=e8af8368d9b024900498f101c5a8927ac78746ab) | `e8af8368d9b024900498f101c5a8927ac78746ab` |
@@ -28,14 +31,14 @@
 
 英文與簡中原始檔保存在本機已排除 Git 的 `src/`，供維護翻譯時對照：
 
-五個版本均直接下載自 Zabbix Git 的固定 commit，不使用 GitHub 鏡像。
+六個版本均直接下載自 Zabbix Git 的固定 commit，不使用 GitHub 鏡像。
 
 - `src/<版本>/en_US/frontend.pot`：官方英文原文模板，原始路徑為 `ui/locale/en_US/LC_MESSAGES/frontend.pot`。
 - `src/<版本>/zh_CN/frontend.po`：官方簡中翻譯，原始路徑為 `ui/locale/zh_CN/LC_MESSAGES/frontend.po`。
 - `src/<版本>/references.json`：下載網址、完整 commit 和 SHA-256，方便核對來源。
 
-7.0、7.2、7.4、8.0 對照檔與上表繁中基線使用相同 commit。6.4 對照檔取自官方 `release/6.4` 的固定 commit `d771ef9710e76a3458ec4d9f7df681744cacbfe1`；原專案自訂 6.4 翻譯沒有記錄對應官方 commit，因此字串集合可能不同，須依語境與原文比對，不能按行號對齊。
+6.0、7.0、7.2、7.4、8.0 對照檔與上表繁中基線使用相同 commit。6.4 對照檔取自官方 `release/6.4` 的固定 commit `d771ef9710e76a3458ec4d9f7df681744cacbfe1`；原專案自訂 6.4 翻譯沒有記錄對應官方 commit，因此字串集合可能不同，須依語境與原文比對，不能按行號對齊。
 
 英文模板的 `msgstr` 留空，原文在 `msgid` 和 `msgid_plural`。簡中只作語意對照；未翻譯或 fuzzy 項目仍須人工核對英文原文。`src/` 保留原始檔，版本目錄保存繁中成果。
 
-Zabbix 6.4 的官方 COPYING 為 GPL-2.0-or-later；7.x 和 8.0 為 AGPL-3.0。官方授權全文保存於 `LICENSES/`。原始自訂翻譯未另附專案授權聲明，本次保留其原有權利狀態，未替原作者新增授權。
+Zabbix 6.0、6.4 的官方 COPYING 為 GPL-2.0-or-later；7.x 和 8.0 為 AGPL-3.0。官方授權全文保存於 `LICENSES/`。原始自訂翻譯未另附專案授權聲明，本次保留其原有權利狀態，未替原作者新增授權。

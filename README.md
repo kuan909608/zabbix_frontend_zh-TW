@@ -4,20 +4,21 @@
 
 | Zabbix 系列 | 翻譯檔 | 狀態 |
 | --- | --- | --- |
+| 6.0 | [frontend.po](6.0/frontend.po) | 4,092 筆皆有譯文且無 fuzzy；沿用精確對應的校對成果，另完成 28 筆專用字串翻譯，待實機驗證 |
 | 6.4 | [frontend.po](6.4/frontend.po) | 4,721 筆皆有譯文且無 fuzzy；已補齊固定官方模板的 50 筆缺漏，保留 104 筆舊版字串，待實機驗證 |
 | 7.0 | [frontend.po](7.0/frontend.po) | 4,756 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
 | 7.2 | [frontend.po](7.2/frontend.po) | 4,747 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
 | 7.4 | [frontend.po](7.4/frontend.po) | 5,156 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
 | 8.0 | [frontend.po](8.0/frontend.po) | 5,693 筆皆有譯文且無 fuzzy；已完成全檔英文／簡中對照文法校對及 238 項核心用語檢查，待實機驗證 |
 
-來源 commit、校對方式與授權見 [SOURCES.md](SOURCES.md)。各版皆已補齊譯文並統一核心用語；字串完全相符時沿用 8.0 的校對成果，6.4 專用字串另行校對。各版本目錄不代表每個修補版本都已實機驗證，仍須在實際畫面確認用語、排版及操作語境。
+來源 commit、校對方式與授權見 [SOURCES.md](SOURCES.md)。各版皆已補齊譯文並統一核心用語；字串完全相符時沿用已校對的成果，6.0／6.4 專用字串另行校對。各版本目錄不代表每個修補版本都已實機驗證，仍須在實際畫面確認用語、排版及操作語境。
 
 ## 下載與編譯
 
 請選擇與 Zabbix **前端版本**相同的系列。前端版本可在其 `include/defines.inc.php` 的 `ZABBIX_VERSION` 查看。
 
 ```bash
-# 選擇 6.4、7.0、7.2、7.4 或 8.0
+# 選擇 6.0、6.4、7.0、7.2、7.4 或 8.0
 VERSION=8.0
 curl -fL -o frontend.po \
   "https://raw.githubusercontent.com/kuan909608/zabbix_frontend_zh-TW/main/${VERSION}/frontend.po"

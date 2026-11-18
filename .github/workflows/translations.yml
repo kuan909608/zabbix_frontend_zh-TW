@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y gettext
       - name: Compile all catalogs
         run: |
-          for version in 6.4 7.0 7.2 7.4 8.0; do
+          for version in 6.0 6.4 7.0 7.2 7.4 8.0; do
             mkdir -p "build/$version"
             msgfmt --check --statistics -o "build/$version/frontend.mo" "$version/frontend.po"
           done
@@ -43,7 +43,7 @@ jobs:
           path: build/
       - name: Package release files
         run: |
-          for version in 6.4 7.0 7.2 7.4 8.0; do
+          for version in 6.0 6.4 7.0 7.2 7.4 8.0; do
             cp "$version/frontend.po" "build/$version/"
             cp -r LICENSES "build/$version/"
             cp SOURCES.md "build/$version/"
