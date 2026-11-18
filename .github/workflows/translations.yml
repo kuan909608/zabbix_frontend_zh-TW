@@ -1,0 +1,56 @@
+name: Check and build translations
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install validation tools
+        run: sudo apt-get update && sudo apt-get install -y gettext
+      - name: Compile all catalogs
+        run: |
+          for version in 6.4 7.0 7.2 7.4 8.0; do
+            mkdir -p "build/$version"
+            msgfmt --check --statistics -o "build/$version/frontend.mo" "$version/frontend.po"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zabbix-zh-TW-catalogs
+          path: build/
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'release'
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: zabbix-zh-TW-catalogs
+          path: build/
+      - name: Package release files
+        run: |
+          for version in 6.4 7.0 7.2 7.4 8.0; do
+            cp "$version/frontend.po" "build/$version/"
+            cp -r LICENSES "build/$version/"
+            cp SOURCES.md "build/$version/"
+            tar -czf "build/zabbix-${version}-zh-TW.tar.gz" -C "build/$version" .
+          done
+      - name: Attach compiled catalogs to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" build/*.tar.gz --clobber

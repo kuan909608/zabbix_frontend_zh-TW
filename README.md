@@ -1,35 +1,93 @@
-Zabbix 繁體中文前端頁面翻譯  
+# Zabbix 前端繁體中文翻譯
 
+此 Repository 提供各版本的繁體中文翻譯檔、安裝說明，以及來源與授權資訊。
 
-步驟(部分需 sudo)：  
+| Zabbix 系列 | 翻譯檔 | 狀態 |
+| --- | --- | --- |
+| 6.4 | [frontend.po](6.4/frontend.po) | 4,721 筆皆有譯文且無 fuzzy；已補齊固定官方模板的 50 筆缺漏，保留 104 筆舊版字串，待實機驗證 |
+| 7.0 | [frontend.po](7.0/frontend.po) | 4,756 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
+| 7.2 | [frontend.po](7.2/frontend.po) | 4,747 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
+| 7.4 | [frontend.po](7.4/frontend.po) | 5,156 筆皆有譯文且無 fuzzy；沿用精確對應的 8.0 校對成果，待實機驗證 |
+| 8.0 | [frontend.po](8.0/frontend.po) | 5,693 筆皆有譯文且無 fuzzy；已完成全檔英文／簡中對照文法校對及 238 項核心用語檢查，待實機驗證 |
 
-1.確認有安裝繁體中文語系  
-```localectl list-locales```  
-沒有的話安裝  
-```apt install language-pack-zh-han*```  
+來源 commit、校對方式與授權見 [SOURCES.md](SOURCES.md)。各版皆已補齊譯文並統一核心用語；字串完全相符時沿用 8.0 的校對成果，6.4 專用字串另行校對。各版本目錄不代表每個修補版本都已實機驗證，仍須在實際畫面確認用語、排版及操作語境。
 
-2.下載中文字體(這裡使用 NotoSansTC)  
-```wget -o /usr/share/zabbix/assets/fonts/NotoSansTC[wght].ttf https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf```  
+## 下載與編譯
 
-3.修改設定檔 locales.inc.php，找到 function getLocales() 啟用繁體中文選項(false => true)  
-```nano /usr/share/zabbix/include/locales.inc.php```  
+請選擇與 Zabbix **前端版本**相同的系列。前端版本可在其 `include/defines.inc.php` 的 `ZABBIX_VERSION` 查看。
 
-4.修改設定檔 defines.inc.php，找到 'ZBX_GRAPH_FONT_NAME' 修改字體為剛下載的  
-```nano /usr/share/zabbix/include/defines.inc.php```  
+```bash
+# 選擇 6.4、7.0、7.2、7.4 或 8.0
+VERSION=8.0
+curl -fL -o frontend.po \
+  "https://raw.githubusercontent.com/kuan909608/zabbix_frontend_zh-TW/main/${VERSION}/frontend.po"
+msgfmt --check --statistics -o frontend.mo frontend.po
+```
 
-5.備份原檔(操作錯誤還原用)  
-```cp /usr/share/zabbix/locale/zh_TW/LC_MESSAGES/frontend.mo /usr/share/zabbix/locale/zh_TW/LC_MESSAGES/frontend.mo.bak```  
+Repo 名稱使用 `zh-TW`，Zabbix 語系目錄使用 `zh_TW`。
 
-6.下載 frontend.po 後編譯翻譯檔  
-```curl -o frontend.po https://raw.githubusercontent.com/kuan909608/zabbix_6.4_frontend_zh_TW/main/frontend.po```  
-```msgfmt frontend.po -ofrontend.mo```  
+也可從 [Releases](https://github.com/kuan909608/zabbix_frontend_zh-TW/releases) 選擇已發布的 `zabbix-<版本>-zh-TW.tar.gz`，取得 PO 與編譯完成的 MO，以及來源和授權資訊。
 
-7.取代原本翻譯檔  
-```cp frontend.mo /usr/share/zabbix/locale/zh_TW/LC_MESSAGES/frontend.mo```  
+## 安裝（Linux）
 
-8.重啟服務、Web service  
-```systemctl restart zabbix-server.service httpd```  
+在前端 Web 主機安裝 gettext 與繁中 locale。Debian／Ubuntu 範例：
 
-完成！！  
+```bash
+sudo apt-get update
+sudo apt-get install -y gettext locales
+# 在 /etc/locale.gen 啟用 zh_TW.UTF-8 UTF-8 後執行
+sudo locale-gen
+locale -a
+```
 
-(更改字體也可解決 zabbix 中文亂碼問題)
+RHEL 系列可安裝 `gettext glibc-langpack-zh`。確認 `locale -a` 包含 `zh_TW.utf8`；參考 [Zabbix 官方語系說明](https://www.zabbix.com/documentation/7.4/en/manual/appendix/install/locales)。
+
+將已編譯的 `frontend.mo` 安裝到實際前端目錄。常見位置包括 `/usr/share/zabbix`、`/usr/share/zabbix/ui` 和 `/usr/share/zabbix/www`，請依部署環境選擇：
+
+```bash
+FRONTEND_DIR=/usr/share/zabbix/ui  # 改成實際前端目錄
+TARGET="$FRONTEND_DIR/locale/zh_TW/LC_MESSAGES/frontend.mo"
+
+# 既有翻譯檔存在時先備份
+if [ -f "$TARGET" ]; then
+  sudo cp -p -- "$TARGET" "${TARGET}.bak.$(date +%Y%m%d%H%M%S)"
+fi
+sudo install -d -- "$(dirname -- "$TARGET")"
+sudo install -m 0644 -- frontend.mo "$TARGET"
+```
+
+完成後重新載入實際使用的 PHP／Web 服務（如 PHP-FPM、Apache），在 Zabbix 個人設定選擇繁體中文，必要時按 Ctrl + F5。翻譯變更不需要重啟 Zabbix Server。若語言選項未啟用，檢查該版 `include/locales.inc.php` 的 `getLocales()`，修改前請備份。容器部署請將翻譯放入映像或持久化掛載。
+
+還原時將來源換成實際備份路徑，然後重新載入 PHP／Web 服務：
+
+```bash
+# sudo cp -p -- /實際路徑/frontend.mo.bak.時間戳記 "$TARGET"
+```
+
+## 圖表中文字體（選用）
+
+圖表若出現方框，可安裝支援繁中的字體，並將實際前端 `include/defines.inc.php` 中的 `ZBX_GRAPH_FONT_NAME` 設為字體檔名（不含 `.ttf`），修改前請備份。
+
+以下以 Noto Sans TC 為例，須確認環境的 GD／FreeType 支援此字體：
+
+```bash
+FRONTEND_DIR=/usr/share/zabbix/ui  # 改成實際前端目錄
+curl -fL -o NotoSansTC.ttf \
+  'https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf'
+sudo install -m 0644 NotoSansTC.ttf "$FRONTEND_DIR/assets/fonts/NotoSansTC.ttf"
+# 在 defines.inc.php 將 ZBX_GRAPH_FONT_NAME 設為 NotoSansTC
+```
+
+字體依其 [SIL Open Font License](https://github.com/google/fonts/blob/main/ofl/notosanstc/OFL.txt) 使用。
+
+## 格式檢查與發佈
+
+可使用 gettext 檢查指定版本：
+
+```bash
+msgfmt --check --statistics -o frontend.mo 8.0/frontend.po
+```
+
+GitHub Actions 在 push、Pull Request 與手動執行時檢查五個版本並產生 MO。發布 GitHub Release 時，會自動附加各版本的 PO／MO 套件及來源、授權資訊；一般檢查僅需讀取權限，Release 附件步驟才有寫入權限。
+
+建議 Release tag 使用 `translations-YYYY.MM.DD`，避免與 Zabbix 官方版本混淆。格式檢查通過不代表翻譯完整或已通過實機測試。

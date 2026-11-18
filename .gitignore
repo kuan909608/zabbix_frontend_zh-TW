@@ -1,0 +1,7 @@
+.tools/
+/src/
+build/
+*.mo
+*.bak
+__pycache__/
+/.translation-work/
