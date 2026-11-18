@@ -81,14 +81,10 @@ sudo install -m 0644 NotoSansTC.ttf "$FRONTEND_DIR/assets/fonts/NotoSansTC.ttf"
 
 字體依其 [SIL Open Font License](https://github.com/google/fonts/blob/main/ofl/notosanstc/OFL.txt) 使用。
 
-## 格式檢查與發佈
+## 格式檢查
 
 可使用 gettext 檢查指定版本：
 
 ```bash
 msgfmt --check --statistics -o frontend.mo 8.0/frontend.po
 ```
-
-GitHub Actions 在 push、Pull Request 與手動執行時檢查五個版本並產生 MO。發布 GitHub Release 時，會自動附加各版本的 PO／MO 套件及來源、授權資訊；一般檢查僅需讀取權限，Release 附件步驟才有寫入權限。
-
-建議 Release tag 使用 `translations-YYYY.MM.DD`，避免與 Zabbix 官方版本混淆。格式檢查通過不代表翻譯完整或已通過實機測試。
